@@ -2,7 +2,6 @@ package com.example.michaela.timelapse;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
-import android.media.CamcorderProfile;
 import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
