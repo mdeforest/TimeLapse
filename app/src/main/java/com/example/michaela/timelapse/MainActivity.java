@@ -1,6 +1,7 @@
 package com.example.michaela.timelapse;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
@@ -8,6 +9,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -58,9 +60,9 @@ public class MainActivity extends AppCompatActivity {
         switch (requestCode) {
             case 1: {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    canUseCamera =true;
+                    canUseCamera = true;
                 } else {
-                    canUseCamera=false;
+                    canUseCamera = false;
                     // permission denied, boo! Disable the functionality that depends on this permission.
                 }
             }
@@ -107,6 +109,19 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
         return false;
+    }
+
+
+    //opens Settings when Settings button is clicked
+    public void clickSettings(View v) {
+        Intent i = new Intent(this, SettingsActivity.class);
+        startActivity(i);
+    }
+
+    //opens Gallery when Gallery button is clicked
+    public void clickGallery(View v) {
+        Intent i = new Intent(this, GalleryActivity.class);
+        startActivity(i);
     }
 
 }

@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Time Lapse</string>
+    <string name="dialog_message">Do you wish to save these settings?</string>
+    <string name="dialog_title">Save Settings</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
 </resources>
