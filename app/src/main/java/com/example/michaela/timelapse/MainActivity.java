@@ -2,6 +2,7 @@ package com.example.michaela.timelapse;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
+import android.media.CamcorderProfile;
 import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -23,11 +24,19 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        cameraPermission();
+        writeExternalPermission();
     }
 
+    /*public void timeLapse(float captureRate){}
+        // Step 3: Set a CamcorderProfile (requires API Level 8 or higher)
+        mMediaRecorder.setProfile(CamcorderProfile.get(CamcorderProfile.QUALITY_TIME_LAPSE_HIGH));
+
+        // Step 5.5: Set the video capture rate to a low number
+        mMediaRecorder.setCaptureRate(captureRate); // capture a frame every 10 seconds (.1)*/
 
 
-    public void recordPermission(){
+    public void cameraPermission(){
         //ask for permissions
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, 1);
