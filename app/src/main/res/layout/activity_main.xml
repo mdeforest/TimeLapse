@@ -1,9 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.example.michaela.timelapse.MainActivity">
 
-</android.support.constraint.ConstraintLayout>
+    <TextView android:id="@+id/timeLapse_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Time Lapse"
+        android:textSize="50dp"
+        android:layout_marginTop="50dp"
+        android:layout_centerHorizontal="true" />
+
+    <Button android:id="@+id/capture_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/timeLapse_title"
+        android:text="Capture"
+        android:textSize="30dp"
+        android:layout_marginTop="20dp"
+        android:onClick="clickCapture" />
+
+    <Button android:id="@+id/settings_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/capture_button"
+        android:text="Settings"
+        android:textSize="30dp"
+        android:layout_marginTop="10dp"
+        android:onClick="clickSettings"/>
+
+    <Button android:id="@+id/gallery_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/settings_button"
+        android:text="Gallery"
+        android:textSize="30dp"
+        android:layout_marginTop="10dp"
+        android:onClick="clickGallery"/>
+
+    <VideoView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/gallery_button"
+        android:visibility="invisible"/>
+
+</RelativeLayout>
