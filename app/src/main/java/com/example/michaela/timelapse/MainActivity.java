@@ -1,16 +1,24 @@
 package com.example.michaela.timelapse;
 
 import android.Manifest;
+import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.hardware.Camera;
+
 import android.os.Environment;
+
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+
 
 import java.io.File;
 import java.util.ArrayList;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -19,21 +27,76 @@ public class MainActivity extends AppCompatActivity {
     private boolean canUseCamera;
     private boolean canSave;
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         cameraPermission();
         writeExternalPermission();
+
     }
 
-    /*public void timeLapse(float captureRate){}
-        // Step 3: Set a CamcorderProfile (requires API Level 8 or higher)
+
+    /*
+    * CAMERA FUNCTIONS
+     */
+
+    public void clickCapture(View v){
+        Camera camera=null;
+        if (checkCameraHardware(this)){
+            camera = getCameraInstance(0);
+
+        }
+        Log.d(TAG, camera.toString());
+        Log.d(TAG, "got here");
+        //CameraActivity preview = new CameraActivity(this);
+        Intent i = new Intent(this, CameraActivity.class);
+        startActivity(i);
+        camera.release();
+
+    }
+
+           /*// Step 3: Set a CamcorderProfile (requires API Level 8 or higher)
         mMediaRecorder.setProfile(CamcorderProfile.get(CamcorderProfile.QUALITY_TIME_LAPSE_HIGH));
 
         // Step 5.5: Set the video capture rate to a low number
         mMediaRecorder.setCaptureRate(captureRate); // capture a frame every 10 seconds (.1)*/
 
+
+    //Check if this device has a camera
+    private boolean checkCameraHardware(Context context) {
+        if (context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA)){
+            // this device has a camera
+            return true;
+        } else {
+            // no camera on this device
+            return false;
+        }
+    }
+
+
+    //get a Camera object
+    public static Camera getCameraInstance(int cameraID){
+        int numCameras = Camera.getNumberOfCameras();
+        Camera c = null;
+        if (cameraID < numCameras) {
+            try {
+                c = Camera.open(cameraID); // attempt to get a Camera instance
+            } catch (Exception e) {
+                // Camera is not available (in use or does not exist)
+            }
+
+        }
+        return c; // returns null if camera is unavailable
+    }
+
+
+
+    /*
+    *PERMISSIONS and STORAGE
+     */
 
     public void cameraPermission(){
         //ask for permissions
