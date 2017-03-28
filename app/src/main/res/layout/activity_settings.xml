@@ -8,45 +8,93 @@
     <TextView android:id="@+id/settings_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Settings"
+        android:text="@string/settings_title"
         android:textSize="40sp"
         android:layout_marginBottom="10dp"
         android:layout_centerHorizontal="true" />
 
-    <LinearLayout android:id="@+id/frame_interval"
+    <LinearLayout android:id="@+id/mode"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_marginBottom="10dp"
-        android:layout_below="@id/settings_text">
+        android:layout_below="@+id/settings_text">
 
-        <TextView android:id="@+id/frame_interval_text"
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
             android:layout_marginLeft="10dp"
             android:layout_marginStart="10dp"
-            android:text="Frame Interval (in seconds)"
-            android:textSize="20sp" />
+            android:text="@string/mode"
+            android:textSize="20sp"/>
 
         <View
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_weight="1" />
 
-        <EditText android:id="@+id/frame_interval_choice"
+        <RadioGroup android:id="@+id/mode_choice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <RadioButton android:id="@+id/mode_choice_auto"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/mode_choice_auto"
+                android:textSize="20sp"/>
+
+            <RadioButton android:id="@+id/mode_choice_manual"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginLeft="20dp"
+                android:text="@string/mode_choice_manual"
+                android:textSize="20sp"
+                android:layout_marginEnd="15dp"
+                android:layout_marginRight="15dp"/>
+
+        </RadioGroup>
+
+    </LinearLayout>
+
+    <LinearLayout android:id="@+id/frame_interval"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="10dp"
+        android:layout_below="@id/mode"
+        android:visibility="visible">
+
+        <TextView android:id="@+id/frame_interval_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
+            android:text="@string/frame_interval"
+            android:textSize="20sp" />
+
+        <EditText
+            android:id="@+id/frame_interval_choice"
             android:layout_width="55dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:textAlignment="viewEnd"
+            android:layout_marginStart="15dp"
+            android:layout_marginLeft="15dp"
             android:ellipsize="end"
-            android:selectAllOnFocus="true"
-            android:hint="2"
-            android:textSize="20sp"
+            android:gravity="end"
+            android:hint="@string/frame_interval_hint"
             android:inputType="number"
             android:maxLength="4"
-            android:layout_marginEnd="15dp"
-            android:layout_marginRight="15dp"/>
+            android:selectAllOnFocus="true"
+            android:textAlignment="viewEnd"
+            android:textSize="20sp" />
+
+        <Spinner android:id="@+id/frame_interval_type_spinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+        </Spinner>
 
     </LinearLayout>
 
@@ -63,7 +111,7 @@
             android:layout_marginBottom="10dp"
             android:layout_marginLeft="10dp"
             android:layout_marginStart="10dp"
-            android:text="Quality"
+            android:text="@string/quality"
             android:textSize="20sp" />
 
         <View
@@ -79,7 +127,7 @@
             <RadioButton android:id="@+id/quality_choice_low"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Low"
+                android:text="@string/quality_choice_low"
                 android:textSize="20sp"/>
 
             <RadioButton android:id="@+id/quality_choice_high"
@@ -87,7 +135,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="20dp"
                 android:layout_marginLeft="20dp"
-                android:text="High"
+                android:text="@string/quality_choice_high"
                 android:textSize="20sp"
                 android:layout_marginEnd="15dp"
                 android:layout_marginRight="15dp"/>
@@ -102,7 +150,7 @@
         android:layout_alignParentBottom="true"
         android:paddingTop="20dp"
         android:paddingBottom="20dp"
-        android:text="Save Settings"
+        android:text="@string/save_settings_button"
         android:textSize="20sp"
         android:onClick="saveSettings"/>
 

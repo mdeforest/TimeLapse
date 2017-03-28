@@ -8,7 +8,7 @@
     <TextView android:id="@+id/timeLapse_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Time Lapse"
+        android:text="@string/title"
         android:textSize="50sp"
         android:layout_marginTop="50dp"
         android:layout_centerHorizontal="true" />
@@ -17,7 +17,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/timeLapse_title"
-        android:text="Capture"
+        android:text="@string/capture_title"
         android:textSize="30sp"
         android:layout_marginTop="20dp"
         android:onClick="clickCapture" />
@@ -26,7 +26,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/capture_button"
-        android:text="Settings"
+        android:text="@string/settings_title"
         android:textSize="30sp"
         android:layout_marginTop="10dp"
         android:onClick="clickSettings"/>
@@ -35,7 +35,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/settings_button"
-        android:text="Gallery"
+        android:text="@string/gallery_title"
         android:textSize="30sp"
         android:layout_marginTop="10dp"
         android:onClick="clickGallery"/>
