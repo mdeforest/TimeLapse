@@ -7,6 +7,7 @@
         android:required="true" />
 
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
@@ -27,6 +28,8 @@
         <activity android:name=".CameraActivity">
             android:screenOrientation="landscape">
             <!-- configure this activity to use landscape orientation -->
+        </activity>
+        <activity android:name=".GalleryActivity">
         </activity>
     </application>
 

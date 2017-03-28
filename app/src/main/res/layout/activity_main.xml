@@ -9,7 +9,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Time Lapse"
-        android:textSize="50dp"
+        android:textSize="50sp"
         android:layout_marginTop="50dp"
         android:layout_centerHorizontal="true" />
 
@@ -18,7 +18,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/timeLapse_title"
         android:text="Capture"
-        android:textSize="30dp"
+        android:textSize="30sp"
         android:layout_marginTop="20dp"
         android:onClick="clickCapture" />
 
@@ -27,7 +27,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/capture_button"
         android:text="Settings"
-        android:textSize="30dp"
+        android:textSize="30sp"
         android:layout_marginTop="10dp"
         android:onClick="clickSettings"/>
 
@@ -36,7 +36,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/settings_button"
         android:text="Gallery"
-        android:textSize="30dp"
+        android:textSize="30sp"
         android:layout_marginTop="10dp"
         android:onClick="clickGallery"/>
 
