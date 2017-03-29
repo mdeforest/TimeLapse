@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
      */
 
     public void clickCapture(View v){
-        Camera camera=null;
+        Camera camera = null;
         if (checkCameraHardware(this)){
             camera = getCameraInstance(0);
 

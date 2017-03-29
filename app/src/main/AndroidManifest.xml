@@ -25,7 +25,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".SettingsActivity" />
-        <activity android:name=".CameraActivity">
+        <activity android:name=".CameraActivity"
             android:screenOrientation="landscape">
             <!-- configure this activity to use landscape orientation -->
         </activity>
