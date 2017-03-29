@@ -16,7 +16,6 @@ import java.io.IOException;
 
 import static android.content.ContentValues.TAG;
 import static android.provider.MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE;
-import static android.view.OrientationEventListener.ORIENTATION_UNKNOWN;
 import static com.example.michaela.timelapse.MainActivity.getCameraInstance;
 
 public class CameraActivity extends Activity {
@@ -35,7 +34,7 @@ public class CameraActivity extends Activity {
 
         // Create our Preview view and set it as the content of our activity.
         mPreview = new CameraPreview(this, mCamera);
-        setContentView(R.layout.activity_camera_activity);
+        setContentView(R.layout.activity_camera);
         FrameLayout preview = (FrameLayout) findViewById(R.id.camera_preview);
         preview.addView(mPreview);
     }
