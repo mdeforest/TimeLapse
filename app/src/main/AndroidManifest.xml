@@ -26,7 +26,7 @@
         </activity>
         <activity android:name=".SettingsActivity" />
         <activity android:name=".CameraActivity"
-            android:screenOrientation="landscape">
+            android:screenOrientation="landscape" >
             <!-- configure this activity to use landscape orientation -->
         </activity>
         <activity android:name=".GalleryActivity">
