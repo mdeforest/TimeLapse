@@ -22,7 +22,7 @@ public class CameraActivity extends Activity {
 
 
     private Camera mCamera;
-    private CameraPreview mPreview;
+    //private CameraPreview mPreview;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -33,10 +33,10 @@ public class CameraActivity extends Activity {
         mCamera = getCameraInstance(0);
 
         // Create our Preview view and set it as the content of our activity.
-        mPreview = new CameraPreview(this, mCamera);
+        //mPreview = new CameraPreview(this, mCamera);
         setContentView(R.layout.activity_camera);
         FrameLayout preview = (FrameLayout) findViewById(R.id.camera_preview);
-        preview.addView(mPreview);
+        //preview.addView(mPreview);
     }
 
     private Camera.PictureCallback mPicture = new Camera.PictureCallback() {
@@ -44,7 +44,7 @@ public class CameraActivity extends Activity {
         @Override
         public void onPictureTaken(byte[] data, Camera camera) {
 
-            File pictureFile = getOutputMediaFile(MEDIA_TYPE_IMAGE);
+            /*File pictureFile = getOutputMediaFile(MEDIA_TYPE_IMAGE);
             if (pictureFile == null){
                 Log.d(TAG, "Error creating media file, check storage permissions: ");
                 return;
@@ -59,7 +59,7 @@ public class CameraActivity extends Activity {
             } catch (IOException e) {
                 Log.d(TAG, "Error accessing file: " + e.getMessage());
             }
-        }
+        }*/
     };
 
     /**
