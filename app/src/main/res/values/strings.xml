@@ -17,6 +17,7 @@
     <string name="mode">Mode</string>
     <string name="mode_choice_auto">Auto</string>
     <string name="mode_choice_manual">Manual</string>
+    <string name="waiting">Waiting...</string>
 
     <string-array name="frame_interval_type_spinner">
         <item>Milliseconds</item>

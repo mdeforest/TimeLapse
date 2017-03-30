@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.hardware.Camera;
 
@@ -15,6 +16,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Surface;
 import android.view.View;
+import android.widget.Toast;
 
 
 import java.io.File;
@@ -33,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         cameraPermission();
         writeExternalPermission();
+
     }
 
 
@@ -214,4 +217,37 @@ public class MainActivity extends AppCompatActivity {
         startActivity(i);
     }
 
+    //Converting from different units to milliseconds for frame interval
+    public long convertUnits() {
+        SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+
+        int frameInterval = sharedPref.getInt("Frame Interval", 2);
+        String unitChoice = sharedPref.getString("Unit", "Milliseconds");
+
+        long convertedUnit = frameInterval;
+
+        switch (unitChoice) {
+            case "Milliseconds":
+                convertedUnit = frameInterval;
+                break;
+
+            case "Seconds":
+                convertedUnit = 1000*frameInterval;
+                break;
+
+            case "Minutes":
+                convertedUnit = 60000*frameInterval;
+                break;
+
+            case "Hours":
+                convertedUnit = 3600000*frameInterval;
+                break;
+
+            case "Days":
+                convertedUnit = 86400000*frameInterval;
+                break;
+        }
+
+        return convertedUnit;
+    }
 }

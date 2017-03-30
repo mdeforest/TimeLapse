@@ -29,7 +29,7 @@ public class CameraActivity extends Activity {
 
 
     private Camera mCamera;
-    //private CameraPreview mPreview;
+    private CameraPreview mPreview;
 
     private Camera.PictureCallback mPicture = new Camera.PictureCallback() {
 
