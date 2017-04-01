@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.hardware.Camera;
 
+import android.hardware.camera2.CameraManager;
 import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -22,12 +23,47 @@ import android.widget.Toast;
 import java.io.File;
 import java.util.ArrayList;
 
+import android.graphics.ImageFormat;
+import android.graphics.SurfaceTexture;
+import android.hardware.camera2.CameraAccessException;
+import android.hardware.camera2.CameraCaptureSession;
+import android.hardware.camera2.CameraCharacteristics;
+import android.hardware.camera2.CameraDevice;
+
+import android.hardware.camera2.CameraMetadata;
+import android.hardware.camera2.CaptureRequest;
+import android.hardware.camera2.TotalCaptureResult;
+import android.hardware.camera2.params.StreamConfigurationMap;
+import android.media.Image;
+import android.media.ImageReader;
+
+import android.os.Handler;
+import android.os.HandlerThread;
+import android.support.annotation.NonNull;
+import android.util.Size;
+import android.util.SparseIntArray;
+
+import android.view.TextureView;
+
+import android.widget.Button;
+
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.ByteBuffer;
+
+import java.util.Arrays;
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity {
 
     private final static String TAG = MainActivity.class.getName();
 
     private boolean canUseCamera;
     private boolean canSave;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
     * CAMERA FUNCTIONS
      */
     public void clickCapture(View v){
-        Camera camera = null;
+        /*Camera camera = null;
         if (checkCameraHardware(this)){
             camera = getCameraInstance(0);
             Camera.Parameters parameters = camera.getParameters();
@@ -54,15 +90,19 @@ public class MainActivity extends AppCompatActivity {
             Log.d(TAG,"got here1");
 
         }
-        Log.d(TAG, camera.toString());
+        Log.d(TAG, camera.toString());*/
         Log.d(TAG, "got here");
         //CameraActivity preview = new CameraActivity(this);
         Intent i = new Intent(this, CameraActivity.class);
         startActivity(i);
-        camera.release();
+        //camera.release();
 
     }
 
+    /*public void clickCapture(View v){
+        CameraManager manager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
+
+    }*/
 
     public static void setCameraDisplayOrientation(Activity activity, int cameraId, android.hardware.Camera camera) {
         android.hardware.Camera.CameraInfo info = new android.hardware.Camera.CameraInfo();
