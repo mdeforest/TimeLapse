@@ -41,6 +41,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.lang.reflect.Array;
 import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -73,11 +74,14 @@ public class CameraActivity extends Activity {
     protected CaptureRequest.Builder captureRequestBuilder;
     private Size imageDimension;
     private ImageReader imageReader;
-    private File file;
     private static final int REQUEST_CAMERA_PERMISSION = 200;
     private boolean mFlashSupported;
     private Handler mBackgroundHandler;
     private HandlerThread mBackgroundThread;
+    private String directoryName;
+    private int fileCounter;
+
+    private File file;
 
 
     @Override
@@ -92,6 +96,9 @@ public class CameraActivity extends Activity {
         takePictureButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+                directoryName = Environment.getExternalStorageDirectory() + "/" + timeStamp;
+                fileCounter = 0;
                 takePicture();
             }
         });
@@ -187,7 +194,6 @@ public class CameraActivity extends Activity {
             // Orientation
             int rotation = getWindowManager().getDefaultDisplay().getRotation();
             captureBuilder.set(CaptureRequest.JPEG_ORIENTATION, ORIENTATIONS.get(rotation));
-            final File file = new File(Environment.getExternalStorageDirectory()+"/pic.jpg");
             ImageReader.OnImageAvailableListener readerListener = new ImageReader.OnImageAvailableListener() {
                 @Override
                 public void onImageAvailable(ImageReader reader) {
@@ -210,9 +216,11 @@ public class CameraActivity extends Activity {
                 }
                 private void save(byte[] bytes) throws IOException {
                     OutputStream output = null;
+                    file = new File(directoryName +"/" + String.valueOf(fileCounter) + ".jpg");
                     try {
                         output = new FileOutputStream(file);
                         output.write(bytes);
+                        Log.d(TAG, "File saved: " + file);
                     } finally {
                         if (null != output) {
                             output.close();
@@ -232,10 +240,20 @@ public class CameraActivity extends Activity {
             cameraDevice.createCaptureSession(outputSurfaces, new CameraCaptureSession.StateCallback() {
                 @Override
                 public void onConfigured(CameraCaptureSession session) {
-                    try {
-                        session.capture(captureBuilder.build(), captureListener, mBackgroundHandler);
-                    } catch (CameraAccessException e) {
-                        e.printStackTrace();
+                    for(int i = 0; i < 20; i++) {
+                        try {
+                            session.capture(captureBuilder.build(), captureListener, mBackgroundHandler);
+                            fileCounter += 1;
+                            Log.d(TAG, "saved");
+                        } catch (CameraAccessException e) {
+                            e.printStackTrace();
+                        }
+
+                        try {
+                            Thread.sleep(10000);
+                        } catch (InterruptedException e) {
+                            Log.d(TAG, "Thread Interrupted");
+                        }
                     }
                 }
                 @Override
@@ -339,10 +357,11 @@ public class CameraActivity extends Activity {
     @Override
     protected void onPause() {
         Log.e(TAG, "onPause");
-        //closeCamera();
+        closeCamera();
         stopBackgroundThread();
         super.onPause();
     }
+
 
     //END CODE FROM https://inducesmile.com/android/android-camera2-api-example-tutorial/
     /*http://stackoverflow.com/questions/16331437/how-to-create-an-animated-gif-from-jpegs-in-android-development
