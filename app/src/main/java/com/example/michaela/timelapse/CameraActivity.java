@@ -240,20 +240,11 @@ public class CameraActivity extends Activity {
             cameraDevice.createCaptureSession(outputSurfaces, new CameraCaptureSession.StateCallback() {
                 @Override
                 public void onConfigured(CameraCaptureSession session) {
-                    for(int i = 0; i < 20; i++) {
-                        try {
-                            session.capture(captureBuilder.build(), captureListener, mBackgroundHandler);
-                            fileCounter += 1;
-                            Log.d(TAG, "saved");
-                        } catch (CameraAccessException e) {
-                            e.printStackTrace();
-                        }
-
-                        try {
-                            Thread.sleep(10000);
-                        } catch (InterruptedException e) {
-                            Log.d(TAG, "Thread Interrupted");
-                        }
+                    try {
+                        session.capture(captureBuilder.build(), captureListener, mBackgroundHandler);
+                        Log.d(TAG, "saved");
+                    } catch (CameraAccessException e) {
+                        e.printStackTrace();
                     }
                 }
                 @Override
