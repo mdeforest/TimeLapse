@@ -59,6 +59,9 @@ public class Camera_new extends Activity {
 
         mPreview = (TextureView) findViewById(R.id.texture);
         captureButton = (Button) findViewById(R.id.button_capture);
+        mCamera = CameraHelper.getDefaultCameraInstance();
+
+        mCamera.startPreview();
     }
 
     /**
@@ -130,7 +133,7 @@ public class Camera_new extends Activity {
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     private boolean prepareVideoRecorder(){
 
-        mCamera = CameraHelper.getDefaultCameraInstance();
+        //mCamera = CameraHelper.getDefaultCameraInstance();
 
         // We need to make sure that our preview and recording video size are supported by the
         // camera. Query camera to find all the sizes and choose the optimal size given the
