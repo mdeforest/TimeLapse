@@ -1,8 +1,14 @@
 package com.example.michaela.timelapse;
 
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.media.ThumbnailUtils;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -11,12 +17,22 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import java.io.File;
+
 public class GalleryActivity extends AppCompatActivity {
+    private String pathName;
+    private File mediaStorageDir;
+    private File[] videoFiles;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gallery);
+
+        mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_PICTURES), "TimeLapse");
+
+        videoFiles = mediaStorageDir.listFiles();
 
         GridView gridView = (GridView) findViewById(R.id.gallery_grid);
         gridView.setAdapter(new ImageAdapter(this));
@@ -24,7 +40,13 @@ public class GalleryActivity extends AppCompatActivity {
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
                 //Open and play video
-                Toast.makeText(GalleryActivity.this, "Clicked image", Toast.LENGTH_SHORT).show();
+
+                pathName = videoFiles[position].getPath();
+
+                Intent i = new Intent(GalleryActivity.this, PlaybackActivity.class);
+                i.putExtra("Video File", pathName);
+                startActivity(i);
+
             }
         });
     }
@@ -37,7 +59,7 @@ public class GalleryActivity extends AppCompatActivity {
         }
 
         public int getCount() {
-            return mThumbIds.length;
+            return mThumb.length;
         }
 
         public Object getItem(int position) {
@@ -62,22 +84,28 @@ public class GalleryActivity extends AppCompatActivity {
                 imageView = (ImageView) convertView;
             }
 
-            imageView.setImageResource(mThumbIds[position]);
+            imageView.setImageBitmap(mThumb[position]);
             return imageView;
         }
 
         //getImages
-        private Integer[] mThumbIds = getThumbnails();
+        private Bitmap[] mThumb = getThumbnails();
     }
 
     //gets Thumbnails for saved Video Files
-    public Integer[] getThumbnails() {
+    public Bitmap[] getThumbnails() {
         //Get thumbnails
 
-        //This code must be replaced
-        Integer[] mThumbIds = new Integer[1];
-        mThumbIds[0] = R.mipmap.test_image;
+        Bitmap[] mThumb = new Bitmap[videoFiles.length];
 
-        return mThumbIds;
+        for(int i = 0; i < videoFiles.length; i++) {
+            Bitmap thumb = ThumbnailUtils.createVideoThumbnail(videoFiles[i].getPath(),
+                    MediaStore.Images.Thumbnails.MINI_KIND);
+
+            mThumb[i] = thumb;
+
+        }
+
+        return mThumb;
     }
 }

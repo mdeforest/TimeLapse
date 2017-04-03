@@ -30,10 +30,10 @@
 
             <!-- configure this activity to use landscape orientation -->
         </activity>
-        <activity android:name=".GalleryActivity"></activity>
-        <activity android:name=".WaitingActivity"></activity>
-        <activity
-            android:name=".Camera_new"></activity>
+        <activity android:name=".GalleryActivity" />
+        <activity android:name=".WaitingActivity" />
+        <activity android:name=".Camera_new" />
+        <activity android:name=".PlaybackActivity"></activity>
     </application>
 
 </manifest>
