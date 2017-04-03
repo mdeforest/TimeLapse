@@ -93,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
         Log.d(TAG, camera.toString());*/
         Log.d(TAG, "got here");
         //CameraActivity preview = new CameraActivity(this);
-        Intent i = new Intent(this, CameraActivity.class);
+        Intent i = new Intent(this, Camera_new.class);
         startActivity(i);
         //camera.release();
 
