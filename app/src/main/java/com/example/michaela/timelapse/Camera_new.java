@@ -84,8 +84,7 @@ public class Camera_new extends Activity {
             releaseMediaRecorder(); // release the MediaRecorder object
             mCamera.lock();         // take camera access back from MediaRecorder
 
-            // inform the user that recording has stopped
-            setCaptureButtonText("Capture");
+
             isRecording = false;
             releaseCamera();
 
@@ -96,10 +95,6 @@ public class Camera_new extends Activity {
 
 
         }
-    }
-
-    private void setCaptureButtonText(String title) {
-        captureButton.setText(title);
     }
 
     @Override
@@ -147,7 +142,7 @@ public class Camera_new extends Activity {
                 mSupportedPreviewSizes, mPreview.getWidth(), mPreview.getHeight());
 
         // Use the same size for recording profile.
-        CamcorderProfile profile = CamcorderProfile.get(CamcorderProfile.QUALITY_HIGH);
+        CamcorderProfile profile = CamcorderProfile.get(CamcorderProfile.QUALITY_TIME_LAPSE_HIGH);
         profile.videoFrameWidth = optimalSize.width;
         profile.videoFrameHeight = optimalSize.height;
 
@@ -171,7 +166,6 @@ public class Camera_new extends Activity {
         mMediaRecorder.setCamera(mCamera);
 
         // Step 2: Set sources
-        mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.CAMCORDER);
         mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
 
         // Step 3: Set a CamcorderProfile (requires API Level 8 or higher)
@@ -227,8 +221,6 @@ public class Camera_new extends Activity {
             if (!result) {
                 Camera_new.this.finish();
             }
-            // inform the user that recording has started
-            setCaptureButtonText("Stop");
 
         }
     }
