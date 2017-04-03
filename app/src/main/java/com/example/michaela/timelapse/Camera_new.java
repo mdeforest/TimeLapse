@@ -18,16 +18,24 @@ package com.example.michaela.timelapse;
 
         import android.annotation.TargetApi;
         import android.app.Activity;
+        import android.content.Context;
+        import android.content.SharedPreferences;
         import android.hardware.Camera;
         import android.media.CamcorderProfile;
         import android.media.MediaRecorder;
         import android.os.AsyncTask;
         import android.os.Build;
         import android.os.Bundle;
+        import android.support.v7.app.AppCompatActivity;
         import android.util.Log;
+        import android.view.Display;
         import android.view.Menu;
+        import android.view.Surface;
+        import android.view.SurfaceHolder;
+        import android.view.SurfaceView;
         import android.view.TextureView;
         import android.view.View;
+        import android.view.WindowManager;
         import android.widget.Button;
 
         //import com.example.android.common.media.CameraHelper;
@@ -41,7 +49,7 @@ package com.example.michaela.timelapse;
  *  A {@link android.view.TextureView} is used as the camera preview which limits the code to API 14+. This
  *  can be easily replaced with a {@link android.view.SurfaceView} to run on older devices.
  */
-public class Camera_new extends Activity {
+public class Camera_new extends AppCompatActivity {
 
     private Camera mCamera;
     private TextureView mPreview;
@@ -59,9 +67,23 @@ public class Camera_new extends Activity {
 
         mPreview = (TextureView) findViewById(R.id.texture);
         captureButton = (Button) findViewById(R.id.button_capture);
+        //mPreview.getSurfaceTexture();
         mCamera = CameraHelper.getDefaultCameraInstance();
+        SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+        Log.d(TAG, sharedPref.getInt("Frame Interval", 2)+"");
+        Log.d(TAG, "shared prefernces: "+ sharedPref);
+        //SurfaceHolder myHolder = getHolder();
 
-        mCamera.startPreview();
+        //CameraPreview cameraPreview = new CameraPreview(this, mCamera);
+        /*mCamera.unlock();
+        try {
+            // Requires API level 11+, For backward compatibility use {@link setPreviewDisplay}
+            // with {@link SurfaceView}
+            mCamera.setPreviewTexture(mPreview.getSurfaceTexture());
+        } catch (IOException e) {
+            Log.e(TAG, "Surface texture is unavailable or unsuitable" + e.getMessage());
+        }*/
+        //mCamera.startPreview();
     }
 
     /**
@@ -132,8 +154,7 @@ public class Camera_new extends Activity {
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     private boolean prepareVideoRecorder(){
-
-        //mCamera = CameraHelper.getDefaultCameraInstance();
+        mCamera = CameraHelper.getDefaultCameraInstance();
 
         // We need to make sure that our preview and recording video size are supported by the
         // camera. Query camera to find all the sizes and choose the optimal size given the
@@ -151,6 +172,31 @@ public class Camera_new extends Activity {
 
         // likewise for the camera object itself.
         parameters.setPreviewSize(profile.videoFrameWidth, profile.videoFrameHeight);
+
+        Display display = ((WindowManager)getSystemService(WINDOW_SERVICE)).getDefaultDisplay();
+
+        if(display.getRotation() == Surface.ROTATION_0)
+        {
+            parameters.setPreviewSize(profile.videoFrameWidth, profile.videoFrameHeight);
+            mCamera.setDisplayOrientation(90);
+        }
+
+        if(display.getRotation() == Surface.ROTATION_90)
+        {
+            parameters.setPreviewSize(profile.videoFrameWidth, profile.videoFrameHeight);
+        }
+
+        if(display.getRotation() == Surface.ROTATION_180)
+        {
+            parameters.setPreviewSize(profile.videoFrameWidth, profile.videoFrameHeight);
+        }
+
+        if(display.getRotation() == Surface.ROTATION_270)
+        {
+            parameters.setPreviewSize(profile.videoFrameWidth, profile.videoFrameHeight);
+            mCamera.setDisplayOrientation(180);
+        }
+
         mCamera.setParameters(parameters);
         try {
             // Requires API level 11+, For backward compatibility use {@link setPreviewDisplay}
@@ -170,6 +216,10 @@ public class Camera_new extends Activity {
 
         // Step 2: Set sources
         mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
+
+        //set frame rate
+        //SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+        mMediaRecorder.setCaptureRate(convertUnits());
 
         // Step 3: Set a CamcorderProfile (requires API Level 8 or higher)
         mMediaRecorder.setProfile(profile);
@@ -227,5 +277,101 @@ public class Camera_new extends Activity {
 
         }
     }
+
+    /** A basic Camera preview class */
+    public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback {
+        private SurfaceHolder myHolder;
+        private Camera myCamera;
+
+        public CameraPreview(Context context, Camera camera) {
+            super(context);
+            myCamera = camera;
+
+            // Install a SurfaceHolder.Callback so we get notified when the
+            // underlying surface is created and destroyed.
+            myHolder = getHolder();
+            myHolder.addCallback(this);
+            // deprecated setting, but required on Android versions prior to 3.0
+            myHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+        }
+
+        public void surfaceCreated(SurfaceHolder holder) {
+            // The Surface has been created, now tell the camera where to draw the preview.
+            try {
+                myCamera.setPreviewDisplay(holder);
+                myCamera.startPreview();
+            } catch (IOException e) {
+                Log.d(TAG, "Error setting camera preview: " + e.getMessage());
+            }
+        }
+
+        public void surfaceDestroyed(SurfaceHolder holder) {
+            // empty. Take care of releasing the Camera preview in your activity.
+        }
+
+        public void surfaceChanged(SurfaceHolder holder, int format, int w, int h) {
+            // If your preview can change or rotate, take care of those events here.
+            // Make sure to stop the preview before resizing or reformatting it.
+
+            if (myHolder.getSurface() == null){
+                // preview surface does not exist
+                return;
+            }
+
+            // stop preview before making changes
+            try {
+                myCamera.stopPreview();
+            } catch (Exception e){
+                // ignore: tried to stop a non-existent preview
+            }
+
+            // set preview size and make any resize, rotate or
+            // reformatting changes here
+
+            // start preview with new settings
+            try {
+                mCamera.setPreviewDisplay(myHolder);
+                mCamera.startPreview();
+
+            } catch (Exception e){
+                Log.d(TAG, "Error starting camera preview: " + e.getMessage());
+            }
+        }
+    }
+
+    //Converting from different units to milliseconds for frame interval
+    public double convertUnits() {
+        SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+
+        int frameInterval = sharedPref.getInt("Frame Interval", 2);
+        String unitChoice = sharedPref.getString("Unit", "Milliseconds");
+
+        double convertedUnit = frameInterval;
+
+        switch (unitChoice) {
+            case "Milliseconds":
+                convertedUnit = frameInterval;
+                break;
+
+            case "Seconds":
+                convertedUnit = 1000*frameInterval;
+                break;
+
+            case "Minutes":
+                convertedUnit = 60000*frameInterval;
+                break;
+
+            case "Hours":
+                convertedUnit = 3600000*frameInterval;
+                break;
+
+            case "Days":
+                convertedUnit = 86400000*frameInterval;
+                break;
+        }
+
+        return convertedUnit;
+    }
+
 
 }

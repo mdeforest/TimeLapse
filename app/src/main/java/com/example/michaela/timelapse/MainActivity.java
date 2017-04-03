@@ -64,7 +64,6 @@ public class MainActivity extends AppCompatActivity {
     private boolean canSave;
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
     /*
     * CAMERA FUNCTIONS
      */
-    public void clickCapture(View v){
+    public void clickCapture(View v) {
         /*Camera camera = null;
         if (checkCameraHardware(this)){
             camera = getCameraInstance(0);
@@ -110,10 +109,18 @@ public class MainActivity extends AppCompatActivity {
         int rotation = activity.getWindowManager().getDefaultDisplay().getRotation();
         int degrees = 0;
         switch (rotation) {
-            case Surface.ROTATION_0: degrees = 0; break;
-            case Surface.ROTATION_90: degrees = 90; break;
-            case Surface.ROTATION_180: degrees = 180; break;
-            case Surface.ROTATION_270: degrees = 270; break;
+            case Surface.ROTATION_0:
+                degrees = 0;
+                break;
+            case Surface.ROTATION_90:
+                degrees = 90;
+                break;
+            case Surface.ROTATION_180:
+                degrees = 180;
+                break;
+            case Surface.ROTATION_270:
+                degrees = 270;
+                break;
         }
 
         int result;
@@ -139,7 +146,7 @@ public class MainActivity extends AppCompatActivity {
 
     //Check if this device has a camera
     private boolean checkCameraHardware(Context context) {
-        if (context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA)){
+        if (context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA)) {
             // this device has a camera
             return true;
         } else {
@@ -150,7 +157,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     //get a Camera object
-    public static Camera getCameraInstance(int cameraID){
+    public static Camera getCameraInstance(int cameraID) {
         int numCameras = Camera.getNumberOfCameras();
         Camera c = null;
         if (cameraID < numCameras) {
@@ -170,20 +177,20 @@ public class MainActivity extends AppCompatActivity {
     *PERMISSIONS and STORAGE
      */
 
-    public void cameraPermission(){
+    public void cameraPermission() {
         //ask for permissions
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, 1);
-        } else{
+        } else {
             canUseCamera = true;
         }
     }
 
     //code from https://developer.android.com/training/permissions/requesting.html
-    public void writeExternalPermission(){
+    public void writeExternalPermission() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 2);
-        } else{
+        } else {
             canSave = true;
         }
     }
@@ -203,7 +210,7 @@ public class MainActivity extends AppCompatActivity {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     if (isExternalStorageWritable()) {
                         File file = getAudioStorageDir("TimeLapse");
-                        canSave= true;
+                        canSave = true;
                         loadSavedFiles();
                     }
                 } else {
@@ -214,7 +221,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //loads all files in the directory to filessofar (so that they will all appear in ViewActivity)
-    public void loadSavedFiles(){
+    public void loadSavedFiles() {
         File sdCardRoot = Environment.getExternalStorageDirectory();
         ArrayList filessofar = new ArrayList<>();
         File yourDir = new File(sdCardRoot, "TimeLapse");
@@ -227,7 +234,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //gets the directory to store files in
-    public File getAudioStorageDir(String folderName){
+    public File getAudioStorageDir(String folderName) {
         File file = new File(Environment.getExternalStorageDirectory(), folderName);
         if (!file.mkdirs()) {
             Log.e(TAG, "Directory not created");
@@ -256,38 +263,6 @@ public class MainActivity extends AppCompatActivity {
         Intent i = new Intent(this, GalleryActivity.class);
         startActivity(i);
     }
-
-    //Converting from different units to milliseconds for frame interval
-    public long convertUnits() {
-        SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
-
-        int frameInterval = sharedPref.getInt("Frame Interval", 2);
-        String unitChoice = sharedPref.getString("Unit", "Milliseconds");
-
-        long convertedUnit = frameInterval;
-
-        switch (unitChoice) {
-            case "Milliseconds":
-                convertedUnit = frameInterval;
-                break;
-
-            case "Seconds":
-                convertedUnit = 1000*frameInterval;
-                break;
-
-            case "Minutes":
-                convertedUnit = 60000*frameInterval;
-                break;
-
-            case "Hours":
-                convertedUnit = 3600000*frameInterval;
-                break;
-
-            case "Days":
-                convertedUnit = 86400000*frameInterval;
-                break;
-        }
-
-        return convertedUnit;
-    }
 }
+
+

@@ -33,8 +33,7 @@
         <activity android:name=".GalleryActivity"></activity>
         <activity android:name=".WaitingActivity"></activity>
         <activity
-            android:name=".Camera_new"
-            android:label="@string/title_activity_camera_new"></activity>
+            android:name=".Camera_new"></activity>
     </application>
 
 </manifest>
