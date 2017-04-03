@@ -78,70 +78,10 @@ public class MainActivity extends AppCompatActivity {
     * CAMERA FUNCTIONS
      */
     public void clickCapture(View v) {
-        /*Camera camera = null;
-        if (checkCameraHardware(this)){
-            camera = getCameraInstance(0);
-            Camera.Parameters parameters = camera.getParameters();
-            camera.setParameters(parameters);
-
-            //parameters.setRotation(180);
-            setCameraDisplayOrientation(this, 0, camera);
-            Log.d(TAG,"got here1");
-
-        }
-        Log.d(TAG, camera.toString());*/
-        Log.d(TAG, "got here");
-        //CameraActivity preview = new CameraActivity(this);
         Intent i = new Intent(this, Camera_new.class);
         startActivity(i);
-        //camera.release();
 
     }
-
-    /*public void clickCapture(View v){
-        CameraManager manager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
-
-    }*/
-
-    public static void setCameraDisplayOrientation(Activity activity, int cameraId, android.hardware.Camera camera) {
-        android.hardware.Camera.CameraInfo info = new android.hardware.Camera.CameraInfo();
-        android.hardware.Camera.getCameraInfo(cameraId, info);
-        int rotation = activity.getWindowManager().getDefaultDisplay().getRotation();
-        int degrees = 0;
-        switch (rotation) {
-            case Surface.ROTATION_0:
-                degrees = 0;
-                break;
-            case Surface.ROTATION_90:
-                degrees = 90;
-                break;
-            case Surface.ROTATION_180:
-                degrees = 180;
-                break;
-            case Surface.ROTATION_270:
-                degrees = 270;
-                break;
-        }
-
-        int result;
-        if (info.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
-            result = (info.orientation + degrees) % 360;
-            result = (360 - result) % 360;  // compensate the mirror
-        } else {  // back-facing
-            result = (info.orientation - degrees + 360) % 360;
-        }
-        camera.setDisplayOrientation(result);
-    }
-
-
-
-
-
-           /*// Step 3: Set a CamcorderProfile (requires API Level 8 or higher)
-        mMediaRecorder.setProfile(CamcorderProfile.get(CamcorderProfile.QUALITY_TIME_LAPSE_HIGH));
-
-        // Step 5.5: Set the video capture rate to a low number
-        mMediaRecorder.setCaptureRate(captureRate); // capture a frame every 10 seconds (.1)*/
 
 
     //Check if this device has a camera
@@ -209,7 +149,7 @@ public class MainActivity extends AppCompatActivity {
             case 2: {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     if (isExternalStorageWritable()) {
-                        File file = getAudioStorageDir("TimeLapse");
+                        File file = getVideoStorageDir("TimeLapse");
                         canSave = true;
                         loadSavedFiles();
                     }
@@ -224,7 +164,8 @@ public class MainActivity extends AppCompatActivity {
     public void loadSavedFiles() {
         File sdCardRoot = Environment.getExternalStorageDirectory();
         ArrayList filessofar = new ArrayList<>();
-        File yourDir = new File(sdCardRoot, "TimeLapse");
+        File yourDir = new File(Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_PICTURES), "TimeLapse");
         if (yourDir.listFiles() != null) {
             for (File f : yourDir.listFiles()) {
                 if (f.isFile())
@@ -234,8 +175,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //gets the directory to store files in
-    public File getAudioStorageDir(String folderName) {
-        File file = new File(Environment.getExternalStorageDirectory(), folderName);
+    public File getVideoStorageDir(String folderName) {
+        File file = new File(Environment.getExternalStoragePublicDirectory(
+        Environment.DIRECTORY_PICTURES), folderName);
         if (!file.mkdirs()) {
             Log.e(TAG, "Directory not created");
         }

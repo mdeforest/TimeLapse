@@ -69,21 +69,6 @@ public class Camera_new extends AppCompatActivity {
         captureButton = (Button) findViewById(R.id.button_capture);
         //mPreview.getSurfaceTexture();
         mCamera = CameraHelper.getDefaultCameraInstance();
-        SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
-        Log.d(TAG, sharedPref.getInt("Frame Interval", 2)+"");
-        Log.d(TAG, "shared prefernces: "+ sharedPref);
-        //SurfaceHolder myHolder = getHolder();
-
-        //CameraPreview cameraPreview = new CameraPreview(this, mCamera);
-        /*mCamera.unlock();
-        try {
-            // Requires API level 11+, For backward compatibility use {@link setPreviewDisplay}
-            // with {@link SurfaceView}
-            mCamera.setPreviewTexture(mPreview.getSurfaceTexture());
-        } catch (IOException e) {
-            Log.e(TAG, "Surface texture is unavailable or unsuitable" + e.getMessage());
-        }*/
-        //mCamera.startPreview();
     }
 
     /**
@@ -178,7 +163,7 @@ public class Camera_new extends AppCompatActivity {
         if(display.getRotation() == Surface.ROTATION_0)
         {
             parameters.setPreviewSize(profile.videoFrameWidth, profile.videoFrameHeight);
-            mCamera.setDisplayOrientation(90);
+            mCamera.setDisplayOrientation(270); //For Michaela's phone, this should be 90
         }
 
         if(display.getRotation() == Surface.ROTATION_90)
@@ -194,8 +179,9 @@ public class Camera_new extends AppCompatActivity {
         if(display.getRotation() == Surface.ROTATION_270)
         {
             parameters.setPreviewSize(profile.videoFrameWidth, profile.videoFrameHeight);
-            mCamera.setDisplayOrientation(180);
+            mCamera.setDisplayOrientation(0); //For Michaela's phone, this should be 180
         }
+
 
         mCamera.setParameters(parameters);
         try {
@@ -218,7 +204,6 @@ public class Camera_new extends AppCompatActivity {
         mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
 
         //set frame rate
-        //SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
         mMediaRecorder.setCaptureRate(convertUnits());
 
         // Step 3: Set a CamcorderProfile (requires API Level 8 or higher)
@@ -372,6 +357,42 @@ public class Camera_new extends AppCompatActivity {
 
         return convertedUnit;
     }
+
+
+    /*public static void setCameraDisplayOrientation(Activity activity, int cameraId, android.hardware.Camera camera) {
+        android.hardware.Camera.CameraInfo info = new android.hardware.Camera.CameraInfo();
+        android.hardware.Camera.getCameraInfo(cameraId, info);
+        int rotation = activity.getWindowManager().getDefaultDisplay().getRotation();
+        Log.d(TAG, "rotation: "+rotation);
+        int degrees = 0;
+        switch (rotation) {
+            case Surface.ROTATION_0:
+                degrees = 0;
+                break;
+            case Surface.ROTATION_90:
+                degrees = 90;
+                break;
+            case Surface.ROTATION_180:
+                degrees = 180;
+                break;
+            case Surface.ROTATION_270:
+                degrees = 270;
+                break;
+        }
+        Log.d(TAG, "degrees: "+degrees);
+        int result;
+        if (info.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
+            Log.d(TAG, info.orientation+"");
+            result = (info.orientation + degrees) % 360;
+            result = (360 - result) % 360;  // compensate the mirror
+        } else {  // back-facing
+            result = (info.orientation - degrees + 360) % 360;
+        }
+        Log.d(TAG, "orientation: "+info.orientation+"");
+        result=result-180;
+        Log.d(TAG, "result of orientation function: "+result);
+        camera.setDisplayOrientation(result);
+    }*/
 
 
 }
