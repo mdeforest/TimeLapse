@@ -88,6 +88,9 @@ public class Camera_new extends AppCompatActivity {
 
             // stop recording and release camera
             try {
+                WindowManager.LayoutParams lp = getWindow().getAttributes();
+                lp.screenBrightness = 0.9f;
+                getWindow().setAttributes(lp);
                 mMediaRecorder.stop();  // stop the recording
                 try{
                     MediaScannerConnection.scanFile(this, new String[]{this.mOutputFile.getAbsolutePath()}, null, null);}
@@ -110,6 +113,9 @@ public class Camera_new extends AppCompatActivity {
 
 
             new MediaPrepareTask().execute(null, null, null);
+            WindowManager.LayoutParams lp = getWindow().getAttributes();
+            lp.screenBrightness = 0.005f;
+            getWindow().setAttributes(lp);
 
 
         }
@@ -230,12 +236,12 @@ public class Camera_new extends AppCompatActivity {
 
         //set frame rate
         int frameRate = convertUnits();
-        double captureRate = (double)1/(double)frameRate;
+        double captureRate = frameRate;
         Log.d(TAG, "frameRate: "+frameRate+"\t captureRate: "+captureRate);
 
         //mMediaRecorder.setVideoFrameRate(frameRate);
         //mMediaRecorder.setVideoEncodingBitRate(frameRate);
-        mMediaRecorder.setCaptureRate(captureRate);
+        mMediaRecorder.setCaptureRate(frameRate);
 
 
         // Step 3: Set a CamcorderProfile (requires API Level 8 or higher)
@@ -328,6 +334,7 @@ public class Camera_new extends AppCompatActivity {
             myHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
         }
 
+        /*@Override
         public void surfaceCreated(SurfaceHolder holder) {
             // The Surface has been created, now tell the camera where to draw the preview.
             try {
@@ -336,6 +343,21 @@ public class Camera_new extends AppCompatActivity {
             } catch (IOException e) {
                 Log.d(TAG, "Error setting camera preview: " + e.getMessage());
             }
+        }*/
+
+        @Override
+        public void surfaceCreated(SurfaceHolder holder) {
+            if (mCamera != null) {
+                Camera.Parameters params = mCamera.getParameters();
+                mCamera.setParameters(params);
+                try {
+                    mCamera.setPreviewDisplay(holder);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                mCamera.startPreview();
+            }
+            prepareVideoRecorder();
         }
 
         public void surfaceDestroyed(SurfaceHolder holder) {

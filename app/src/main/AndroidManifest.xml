@@ -33,7 +33,9 @@
         <activity android:name=".GalleryActivity" />
         <activity android:name=".WaitingActivity" />
         <activity android:name=".Camera_new" />
-        <activity android:name=".PlaybackActivity"></activity>
+        <activity android:name=".PlaybackActivity"
+            android:theme="@style/Theme.AppCompat.NoActionBar" >
+        </activity>
     </application>
 
 </manifest>

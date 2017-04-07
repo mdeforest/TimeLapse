@@ -6,10 +6,15 @@
     android:layout_height="match_parent"
     tools:context="com.example.michaela.timelapse.PlaybackActivity">
 
-    <SurfaceView
-        android:id="@+id/playback"
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    <VideoView
+        android:id="@+id/playback_video"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        />
+        android:layout_gravity="center"/>
+
+    </FrameLayout>
 
 </RelativeLayout>

@@ -52,7 +52,6 @@ import java.util.List;
 import static android.content.ContentValues.TAG;
 import static android.provider.MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE;
 import static android.provider.MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO;
-import static com.example.michaela.timelapse.MainActivity.getCameraInstance;
 
 public class CameraActivity extends Activity {
 
