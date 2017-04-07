@@ -165,6 +165,7 @@ public class Camera_new extends AppCompatActivity {
         String qualityChoice = sharedPref.getString("Quality", "high");
 
         CamcorderProfile profile;
+        
 
         if (qualityChoice.equals("low")) {
             profile = CamcorderProfile.get(CamcorderProfile.QUALITY_TIME_LAPSE_LOW);
