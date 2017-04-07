@@ -205,8 +205,8 @@ public class Camera_new extends AppCompatActivity {
         mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
 
         //set frame rate
-        Log.d(TAG, "time interval: "+convertUnits());
-        mMediaRecorder.setCaptureRate(convertUnits());
+        //Log.d(TAG, "time interval: "+convertUnits());
+        //mMediaRecorder.setCaptureRate(convertUnits());
         //mMediaRecorder.setVideoFrameRate();
 
         // Step 3: Set a CamcorderProfile (requires API Level 8 or higher)
