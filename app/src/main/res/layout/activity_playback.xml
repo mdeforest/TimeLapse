@@ -6,9 +6,10 @@
     android:layout_height="match_parent"
     tools:context="com.example.michaela.timelapse.PlaybackActivity">
 
-    <TextureView
+    <SurfaceView
         android:id="@+id/playback"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        />
 
 </RelativeLayout>

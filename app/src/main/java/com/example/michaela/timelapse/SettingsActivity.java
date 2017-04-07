@@ -3,6 +3,7 @@ package com.example.michaela.timelapse;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -186,7 +187,8 @@ public class SettingsActivity extends AppCompatActivity {
     //save Current Settings
     public void saveSettings(View v) {
         //Save in shared Preferences
-        SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+               // getApplicationContext().getPreferences(Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
 
         //Mode
@@ -228,7 +230,7 @@ public class SettingsActivity extends AppCompatActivity {
         editor.putString("Quality", qualityChoice);
         editor.apply();
 
-        Log.d(TAG, String.valueOf(sharedPref.getInt("Frame Interval", 2)));
+        Log.d(TAG, "we Saved: "+ sharedPref.getAll().toString());
 
 
         //return to Main Activity

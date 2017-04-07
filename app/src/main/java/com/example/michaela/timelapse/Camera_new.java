@@ -26,6 +26,7 @@ package com.example.michaela.timelapse;
         import android.os.AsyncTask;
         import android.os.Build;
         import android.os.Bundle;
+        import android.preference.PreferenceManager;
         import android.support.v7.app.AppCompatActivity;
         import android.util.Log;
         import android.view.Display;
@@ -204,6 +205,7 @@ public class Camera_new extends AppCompatActivity {
         mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
 
         //set frame rate
+        Log.d(TAG, "time interval: "+convertUnits());
         mMediaRecorder.setCaptureRate(convertUnits());
 
         // Step 3: Set a CamcorderProfile (requires API Level 8 or higher)
@@ -326,7 +328,8 @@ public class Camera_new extends AppCompatActivity {
 
     //Converting from different units to milliseconds for frame interval
     public double convertUnits() {
-        SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        Log.d(TAG, "prefs: "+sharedPref.getAll().toString());
 
         int frameInterval = sharedPref.getInt("Frame Interval", 2);
         String unitChoice = sharedPref.getString("Unit", "Milliseconds");
@@ -336,6 +339,7 @@ public class Camera_new extends AppCompatActivity {
         switch (unitChoice) {
             case "Milliseconds":
                 convertedUnit = frameInterval;
+                Log.d(TAG, "we got here");
                 break;
 
             case "Seconds":
