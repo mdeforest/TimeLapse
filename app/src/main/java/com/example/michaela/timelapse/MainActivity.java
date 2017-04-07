@@ -96,20 +96,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    //get a Camera object
-    public static Camera getCameraInstance(int cameraID) {
-        int numCameras = Camera.getNumberOfCameras();
-        Camera c = null;
-        if (cameraID < numCameras) {
-            try {
-                c = Camera.open(cameraID); // attempt to get a Camera instance
-            } catch (Exception e) {
-                // Camera is not available (in use or does not exist)
-            }
-
-        }
-        return c; // returns null if camera is unavailable
-    }
 
 
 

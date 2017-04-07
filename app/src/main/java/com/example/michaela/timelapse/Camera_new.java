@@ -23,6 +23,7 @@ package com.example.michaela.timelapse;
         import android.hardware.Camera;
         import android.media.CamcorderProfile;
         import android.media.MediaRecorder;
+        import android.media.MediaScannerConnection;
         import android.os.AsyncTask;
         import android.os.Build;
         import android.os.Bundle;
@@ -88,6 +89,9 @@ public class Camera_new extends AppCompatActivity {
             // stop recording and release camera
             try {
                 mMediaRecorder.stop();  // stop the recording
+                try{
+                    MediaScannerConnection.scanFile(this, new String[]{this.mOutputFile.getAbsolutePath()}, null, null);}
+                catch (Exception e){Log.d(TAG, "outputfile is null");}
             } catch (RuntimeException e) {
                 // RuntimeException is thrown when stop() is called immediately after start().
                 // In this case the output file is not properly constructed ans should be deleted.
@@ -118,6 +122,8 @@ public class Camera_new extends AppCompatActivity {
         releaseMediaRecorder();
         // release the camera immediately on pause event
         releaseCamera();
+
+
     }
 
     private void releaseMediaRecorder(){
@@ -165,7 +171,7 @@ public class Camera_new extends AppCompatActivity {
         String qualityChoice = sharedPref.getString("Quality", "high");
 
         CamcorderProfile profile;
-        
+
 
         if (qualityChoice.equals("low")) {
             profile = CamcorderProfile.get(CamcorderProfile.QUALITY_TIME_LAPSE_LOW);
@@ -222,9 +228,16 @@ public class Camera_new extends AppCompatActivity {
         // Step 2: Set sources
         mMediaRecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
 
+
         //set frame rate
-        Log.d(TAG, "time interval: "+convertUnits());
-        mMediaRecorder.setCaptureRate(convertUnits());
+        int frameRate = convertUnits();
+        double captureRate = (double)1/(double)frameRate;
+        Log.d(TAG, "frameRate: "+frameRate+"\t captureRate: "+captureRate);
+
+        //mMediaRecorder.setVideoFrameRate(frameRate);
+        //mMediaRecorder.setVideoEncodingBitRate(frameRate);
+        mMediaRecorder.setCaptureRate(captureRate);
+
 
         // Step 3: Set a CamcorderProfile (requires API Level 8 or higher)
         mMediaRecorder.setProfile(profile);
@@ -250,6 +263,22 @@ public class Camera_new extends AppCompatActivity {
         }
         return true;
     }
+
+    //get a Camera object
+    public static Camera getCameraInstance(int cameraID) {
+        int numCameras = Camera.getNumberOfCameras();
+        Camera c = null;
+        if (cameraID < numCameras) {
+            try {
+                c = Camera.open(cameraID); // attempt to get a Camera instance
+            } catch (Exception e) {
+                // Camera is not available (in use or does not exist)
+            }
+
+        }
+        return c; // returns null if camera is unavailable
+    }
+
 
     /**
      * Asynchronous task for preparing the {@link android.media.MediaRecorder} since it's a long blocking
@@ -345,34 +374,34 @@ public class Camera_new extends AppCompatActivity {
     }
 
     //Converting from different units to milliseconds for frame interval
-    public double convertUnits() {
+    public int convertUnits() {
         Log.d(TAG, "prefs: "+sharedPref.getAll().toString());
 
         int frameInterval = sharedPref.getInt("Frame Interval", 2);
         String unitChoice = sharedPref.getString("Unit", "Milliseconds");
 
-        double convertedUnit = frameInterval;
+        int convertedUnit = frameInterval;
 
         switch (unitChoice) {
             case "Milliseconds":
-                convertedUnit = frameInterval;
-                Log.d(TAG, "we got here");
+                convertedUnit = 1000/frameInterval;
+                Log.d(TAG, "we got here: " + convertedUnit);
                 break;
 
             case "Seconds":
-                convertedUnit = 1000*frameInterval;
+                convertedUnit = frameInterval;
                 break;
 
             case "Minutes":
-                convertedUnit = 60000*frameInterval;
+                convertedUnit = frameInterval/60;
                 break;
 
             case "Hours":
-                convertedUnit = 3600000*frameInterval;
+                convertedUnit = frameInterval/3600;
                 break;
 
             case "Days":
-                convertedUnit = 86400000*frameInterval;
+                convertedUnit = frameInterval/86400;
                 break;
         }
 

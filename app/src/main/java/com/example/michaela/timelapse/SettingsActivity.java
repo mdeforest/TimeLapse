@@ -162,8 +162,7 @@ public class SettingsActivity extends AppCompatActivity {
     //save Current Settings
     public void saveSettings(View v) {
         //Save in shared Preferences
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-               // getApplicationContext().getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());;
         SharedPreferences.Editor editor = sharedPref.edit();
 
         //Mode
@@ -202,7 +201,7 @@ public class SettingsActivity extends AppCompatActivity {
         editor.putString("Quality", qualityChoice);
         editor.apply();
 
-        Log.d(TAG, "we Saved: "+ sharedPref.getAll().toString());
+        Log.d(TAG, String.valueOf(sharedPref.getInt("Frame Interval", 2)));
 
 
         //return to Main Activity
