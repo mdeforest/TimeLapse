@@ -207,6 +207,7 @@ public class Camera_new extends AppCompatActivity {
         //set frame rate
         Log.d(TAG, "time interval: "+convertUnits());
         mMediaRecorder.setCaptureRate(convertUnits());
+        //mMediaRecorder.setVideoFrameRate();
 
         // Step 3: Set a CamcorderProfile (requires API Level 8 or higher)
         mMediaRecorder.setProfile(profile);
@@ -331,31 +332,31 @@ public class Camera_new extends AppCompatActivity {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         Log.d(TAG, "prefs: "+sharedPref.getAll().toString());
 
-        int frameInterval = sharedPref.getInt("Frame Interval", 2);
+        double frameInterval = sharedPref.getLong("Frame Interval", 2);
         String unitChoice = sharedPref.getString("Unit", "Milliseconds");
 
         double convertedUnit = frameInterval;
 
         switch (unitChoice) {
             case "Milliseconds":
-                convertedUnit = frameInterval;
-                Log.d(TAG, "we got here");
+                convertedUnit = frameInterval/1000;
+                Log.d(TAG, "we got here: " + convertedUnit);
                 break;
 
             case "Seconds":
-                convertedUnit = 1000*frameInterval;
+                convertedUnit = frameInterval;
                 break;
 
             case "Minutes":
-                convertedUnit = 60000*frameInterval;
+                convertedUnit = 60*frameInterval;
                 break;
 
             case "Hours":
-                convertedUnit = 3600000*frameInterval;
+                convertedUnit = 3600*frameInterval;
                 break;
 
             case "Days":
-                convertedUnit = 86400000*frameInterval;
+                convertedUnit = 86400*frameInterval;
                 break;
         }
 
