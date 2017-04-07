@@ -61,6 +61,8 @@ public class Camera_new extends AppCompatActivity {
     private static final String TAG = "Recorder";
     private Button captureButton;
 
+    private SharedPreferences sharedPref;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,8 +70,9 @@ public class Camera_new extends AppCompatActivity {
 
         mPreview = (TextureView) findViewById(R.id.texture);
         captureButton = (Button) findViewById(R.id.button_capture);
-        //mPreview.getSurfaceTexture();
-        mCamera = CameraHelper.getDefaultCameraInstance();
+
+        sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+
     }
 
     /**
@@ -140,7 +143,14 @@ public class Camera_new extends AppCompatActivity {
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     private boolean prepareVideoRecorder(){
-        mCamera = CameraHelper.getDefaultCameraInstance();
+        String cameraChoice = sharedPref.getString("Camera", "rear");
+
+        if (cameraChoice.equals("front")) {
+            mCamera = CameraHelper.getDefaultFrontFacingCameraInstance();
+        }
+        else {
+            mCamera = CameraHelper.getDefaultBackFacingCameraInstance();
+        }
 
         // We need to make sure that our preview and recording video size are supported by the
         // camera. Query camera to find all the sizes and choose the optimal size given the
@@ -152,37 +162,44 @@ public class Camera_new extends AppCompatActivity {
                 mSupportedPreviewSizes, mPreview.getWidth(), mPreview.getHeight());
 
         // Use the same size for recording profile.
-        CamcorderProfile profile = CamcorderProfile.get(CamcorderProfile.QUALITY_TIME_LAPSE_HIGH);
+        String qualityChoice = sharedPref.getString("Quality", "high");
+
+        CamcorderProfile profile;
+
+        if (qualityChoice.equals("low")) {
+            profile = CamcorderProfile.get(CamcorderProfile.QUALITY_TIME_LAPSE_LOW);
+        }
+        else {
+            profile = CamcorderProfile.get(CamcorderProfile.QUALITY_TIME_LAPSE_HIGH);
+        }
+
         profile.videoFrameWidth = optimalSize.width;
         profile.videoFrameHeight = optimalSize.height;
 
         // likewise for the camera object itself.
         parameters.setPreviewSize(profile.videoFrameWidth, profile.videoFrameHeight);
 
-        Display display = ((WindowManager)getSystemService(WINDOW_SERVICE)).getDefaultDisplay();
+        if (cameraChoice.equals("rear")) {
+            Display display = ((WindowManager) getSystemService(WINDOW_SERVICE)).getDefaultDisplay();
 
-        if(display.getRotation() == Surface.ROTATION_0)
-        {
-            parameters.setPreviewSize(profile.videoFrameWidth, profile.videoFrameHeight);
-            mCamera.setDisplayOrientation(270); //For Michaela's phone, this should be 90
+            if (display.getRotation() == Surface.ROTATION_0) {
+                parameters.setPreviewSize(profile.videoFrameWidth, profile.videoFrameHeight);
+                mCamera.setDisplayOrientation(270); //For Michaela's phone, this should be 90
+            }
+
+            if (display.getRotation() == Surface.ROTATION_90) {
+                parameters.setPreviewSize(profile.videoFrameWidth, profile.videoFrameHeight);
+            }
+
+            if (display.getRotation() == Surface.ROTATION_180) {
+                parameters.setPreviewSize(profile.videoFrameWidth, profile.videoFrameHeight);
+            }
+
+            if (display.getRotation() == Surface.ROTATION_270) {
+                parameters.setPreviewSize(profile.videoFrameWidth, profile.videoFrameHeight);
+                mCamera.setDisplayOrientation(0); //For Michaela's phone, this should be 180
+            }
         }
-
-        if(display.getRotation() == Surface.ROTATION_90)
-        {
-            parameters.setPreviewSize(profile.videoFrameWidth, profile.videoFrameHeight);
-        }
-
-        if(display.getRotation() == Surface.ROTATION_180)
-        {
-            parameters.setPreviewSize(profile.videoFrameWidth, profile.videoFrameHeight);
-        }
-
-        if(display.getRotation() == Surface.ROTATION_270)
-        {
-            parameters.setPreviewSize(profile.videoFrameWidth, profile.videoFrameHeight);
-            mCamera.setDisplayOrientation(0); //For Michaela's phone, this should be 180
-        }
-
 
         mCamera.setParameters(parameters);
         try {
@@ -328,7 +345,6 @@ public class Camera_new extends AppCompatActivity {
 
     //Converting from different units to milliseconds for frame interval
     public double convertUnits() {
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         Log.d(TAG, "prefs: "+sharedPref.getAll().toString());
 
         int frameInterval = sharedPref.getInt("Frame Interval", 2);
