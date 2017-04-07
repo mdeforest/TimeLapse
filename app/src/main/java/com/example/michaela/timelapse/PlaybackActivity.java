@@ -65,6 +65,7 @@ public class PlaybackActivity extends AppCompatActivity implements SurfaceHolder
         } catch (IOException e) {
             e.printStackTrace();
         }
+
     }
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {

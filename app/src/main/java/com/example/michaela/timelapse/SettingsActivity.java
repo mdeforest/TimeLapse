@@ -43,7 +43,7 @@ public class SettingsActivity extends AppCompatActivity {
                 RadioGroup modeGroup = (RadioGroup) findViewById(R.id.mode_choice);
                 int modeChoiceInt = modeGroup.getCheckedRadioButtonId();
 
-                if (modeChoiceInt == R.id.mode_choice_auto) {
+                if (modeChoiceInt == R.id.mode_choice) {
                     LinearLayout frameIntLayout = (LinearLayout) findViewById(R.id.frame_interval);
                     frameIntLayout.setVisibility(View.VISIBLE);
                 } else {

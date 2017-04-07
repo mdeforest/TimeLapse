@@ -27,4 +27,7 @@
         <item>Days</item>
     </string-array>
     <string name="title_activity_camera_new">Camera_new</string>
+    <string name="camera">Camera</string>
+    <string name="front">Front</string>
+    <string name="rear">Rear</string>
 </resources>
