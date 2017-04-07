@@ -22,7 +22,7 @@ public class SettingsActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getName();
 
-    Long frameLong;
+    Integer frameInt;
     String qualityChoice;
     String modeChoice;
     String unitChoice;
@@ -32,7 +32,7 @@ public class SettingsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
-        //Sets frameLongerval layout visibility based on ModeGroup choice
+        //Sets frameInterval layout visibility based on ModeGroup choice
         RadioGroup modeGroup = (RadioGroup) findViewById(R.id.mode_choice);
         modeGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener()
         {
@@ -44,11 +44,11 @@ public class SettingsActivity extends AppCompatActivity {
                 int modeChoiceInt = modeGroup.getCheckedRadioButtonId();
 
                 if (modeChoiceInt == R.id.mode_choice_auto) {
-                    LinearLayout frameLongLayout = (LinearLayout) findViewById(R.id.frame_interval);
-                    frameLongLayout.setVisibility(View.VISIBLE);
+                    LinearLayout frameIntLayout = (LinearLayout) findViewById(R.id.frame_interval);
+                    frameIntLayout.setVisibility(View.VISIBLE);
                 } else {
-                    LinearLayout frameLongLayout = (LinearLayout) findViewById(R.id.frame_interval);
-                    frameLongLayout.setVisibility(View.GONE);
+                    LinearLayout frameIntLayout = (LinearLayout) findViewById(R.id.frame_interval);
+                    frameIntLayout.setVisibility(View.GONE);
                 }
             }
         });
@@ -57,7 +57,7 @@ public class SettingsActivity extends AppCompatActivity {
         SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
 
         modeChoice = sharedPref.getString("Mode", "auto");
-        frameLong = sharedPref.getLong("Frame Interval", 2);
+        frameInt = sharedPref.getInt("Frame Interval", 2);
         qualityChoice = sharedPref.getString("Quality", "high");
         unitChoice = sharedPref.getString("Unit", "Milliseconds");
 
@@ -70,11 +70,11 @@ public class SettingsActivity extends AppCompatActivity {
 
         //Frame Interval
         if (modeChoice.equals("auto")) {
-            LinearLayout frameLongLayout = (LinearLayout) findViewById(R.id.frame_interval);
-            frameLongLayout.setVisibility(View.VISIBLE);
-            EditText frameLongText = (EditText) findViewById(R.id.frame_interval_choice);
-            frameLongText.setText(String.valueOf(frameLong));
-            frameLongText.setSelection(frameLongText.getText().length());
+            LinearLayout frameIntLayout = (LinearLayout) findViewById(R.id.frame_interval);
+            frameIntLayout.setVisibility(View.VISIBLE);
+            EditText frameIntText = (EditText) findViewById(R.id.frame_interval_choice);
+            frameIntText.setText(String.valueOf(frameInt));
+            frameIntText.setSelection(frameIntText.getText().length());
 
             Spinner spinner = (Spinner) findViewById(R.id.frame_interval_type_spinner);
             // Create an ArrayAdapter using the string array and a default spinner layout
@@ -89,8 +89,8 @@ public class SettingsActivity extends AppCompatActivity {
             spinner.setSelection(position);
 
         } else {
-            LinearLayout frameLongLayout = (LinearLayout) findViewById(R.id.frame_interval);
-            frameLongLayout.setVisibility(View.GONE);
+            LinearLayout frameIntLayout = (LinearLayout) findViewById(R.id.frame_interval);
+            frameIntLayout.setVisibility(View.GONE);
         }
 
         //Quality
@@ -109,7 +109,7 @@ public class SettingsActivity extends AppCompatActivity {
     public void onBackPressed() {
         Log.d(TAG, "Back button pressed");
 
-        boolean hasNotChanged = checkIfSame(frameLong, qualityChoice, modeChoice, unitChoice);
+        boolean hasNotChanged = checkIfSame(frameInt, qualityChoice, modeChoice, unitChoice);
 
         if (!hasNotChanged) {
             // 1. Instantiate an AlertDialog.Builder with its constructor
@@ -150,7 +150,7 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     //Checks if settings have not changed from last save
-    public boolean checkIfSame(Long frameLong, String qualityChoice, String modeChoice, String unitChoice) {
+    public boolean checkIfSame(Integer frameInt, String qualityChoice, String modeChoice, String unitChoice) {
         //Mode
         RadioGroup modeGroup = (RadioGroup) findViewById(R.id.mode_choice);
         int modeChoiceInt = modeGroup.getCheckedRadioButtonId();
@@ -162,8 +162,8 @@ public class SettingsActivity extends AppCompatActivity {
         }
 
         //Frame Interval
-        EditText frameLongText = (EditText) findViewById(R.id.frame_interval_choice);
-        Long frameLongNew = Long.valueOf(frameLongText.getText().toString());
+        EditText frameIntText = (EditText) findViewById(R.id.frame_interval_choice);
+        int frameIntNew = Integer.valueOf(frameIntText.getText().toString());
 
         Spinner spinner = (Spinner) findViewById(R.id.frame_interval_type_spinner);
         String unitChoiceNew = spinner.getSelectedItem().toString();
@@ -178,7 +178,7 @@ public class SettingsActivity extends AppCompatActivity {
             qualityChoiceNew = "low";
         }
 
-        return frameLong == frameLongNew && qualityChoice.equals(qualityChoiceNew) && modeChoice.equals(modeChoiceNew)
+        return frameInt == frameIntNew && qualityChoice.equals(qualityChoiceNew) && modeChoice.equals(modeChoiceNew)
                 && unitChoice.equals(unitChoiceNew);
 
     }
@@ -187,8 +187,7 @@ public class SettingsActivity extends AppCompatActivity {
     //save Current Settings
     public void saveSettings(View v) {
         //Save in shared Preferences
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-               // getApplicationContext().getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());;
         SharedPreferences.Editor editor = sharedPref.edit();
 
         //Mode
@@ -202,16 +201,16 @@ public class SettingsActivity extends AppCompatActivity {
         }
 
         //Frame Interval
-        LinearLayout frameLongLayout = (LinearLayout) findViewById(R.id.frame_interval);
-        EditText frameLongText = (EditText) findViewById(R.id.frame_interval_choice);
+        LinearLayout frameIntLayout = (LinearLayout) findViewById(R.id.frame_interval);
+        EditText frameIntText = (EditText) findViewById(R.id.frame_interval_choice);
 
         Spinner spinner = (Spinner) findViewById(R.id.frame_interval_type_spinner);
 
         //Setting visibility
-        if(frameLongLayout.getVisibility() == View.VISIBLE) {
-            frameLong = Long.valueOf(frameLongText.getText().toString());
+        if(frameIntLayout.getVisibility() == View.VISIBLE) {
+            frameInt = Integer.valueOf(frameIntText.getText().toString());
             unitChoice = spinner.getSelectedItem().toString();
-            Log.d(TAG, String.valueOf(frameLong));
+            Log.d(TAG, String.valueOf(frameInt));
         }
 
         //Quality
@@ -225,12 +224,12 @@ public class SettingsActivity extends AppCompatActivity {
         }
 
         editor.putString("Mode", modeChoice);
-        editor.putLong("Frame Interval", frameLong);
+        editor.putInt("Frame Interval", frameInt);
         editor.putString("Unit", unitChoice);
         editor.putString("Quality", qualityChoice);
         editor.apply();
 
-        Log.d(TAG, "we Saved: "+ sharedPref.getAll().toString());
+        Log.d(TAG, String.valueOf(sharedPref.getInt("Frame Interval", 2)));
 
 
         //return to Main Activity

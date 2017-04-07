@@ -82,7 +82,7 @@ public class PlaybackActivity extends AppCompatActivity implements SurfaceHolder
     @Override
     protected void onPause() {
         super.onPause();
-        mMediaPlayer.release();
+
         releaseMediaPlayer();
     }
     @Override
@@ -97,43 +97,5 @@ public class PlaybackActivity extends AppCompatActivity implements SurfaceHolder
         }
     }
 
-    /*public int getDeviceOrientation(Context context) {
 
-        int degrees = 0;
-        WindowManager windowManager =
-                (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-        int rotation = windowManager.getDefaultDisplay().getRotation();
-
-        switch(rotation) {
-            case Surface.ROTATION_0:
-                degrees = 0;
-                break;
-            case Surface.ROTATION_90:
-                degrees = 90;
-                break;
-            case Surface.ROTATION_180:
-                degrees = 180;
-                break;
-            case Surface.ROTATION_270:
-                degrees = 270;
-                break;
-        }
-
-        return degrees;
-    }
-
-    public static int getPreviewOrientation(Context context, int cameraId) {
-
-        int temp = 0;
-        int previewOrientation = 0;
-
-        Camera.CameraInfo cameraInfo = new Camera.CameraInfo();
-        Camera.getCameraInfo(cameraId, cameraInfo);
-
-        int deviceOrientation = getDeviceOrientation(context);
-        temp = cameraInfo.orientation - deviceOrientation + 360;
-        previewOrientation = temp % 360;
-
-        return previewOrientation;
-    }*/
 }
