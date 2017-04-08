@@ -163,9 +163,11 @@ public class Camera_new extends AppCompatActivity {
 
         if (cameraChoice.equals("front")) {
             mCamera = CameraHelper.getDefaultFrontFacingCameraInstance();
+            mCamera.setDisplayOrientation(90);
         }
         else {
             mCamera = CameraHelper.getDefaultBackFacingCameraInstance();
+            mCamera.setDisplayOrientation(270);
         }
 
         // We need to make sure that our preview and recording video size are supported by the
@@ -195,12 +197,12 @@ public class Camera_new extends AppCompatActivity {
         // likewise for the camera object itself.
         parameters.setPreviewSize(profile.videoFrameWidth, profile.videoFrameHeight);
 
-        if (cameraChoice.equals("rear")) {
+        /*if (cameraChoice.equals("rear")) {
             Display display = ((WindowManager) getSystemService(WINDOW_SERVICE)).getDefaultDisplay();
 
             if (display.getRotation() == Surface.ROTATION_0) {
                 parameters.setPreviewSize(profile.videoFrameWidth, profile.videoFrameHeight);
-                mCamera.setDisplayOrientation(270); //For Michaela's phone, this should be 90
+                 //For Michaela's phone, this should be 90
             }
 
             if (display.getRotation() == Surface.ROTATION_90) {
@@ -215,19 +217,15 @@ public class Camera_new extends AppCompatActivity {
                 parameters.setPreviewSize(profile.videoFrameWidth, profile.videoFrameHeight);
                 mCamera.setDisplayOrientation(0); //For Michaela's phone, this should be 180
             }
-        }
+        }*/
 
         mCamera.setParameters(parameters);
         try {
-            // Requires API level 11+, For backward compatibility use {@link setPreviewDisplay}
-            // with {@link SurfaceView}
             mCamera.setPreviewTexture(mPreview.getSurfaceTexture());
         } catch (IOException e) {
             Log.e(TAG, "Surface texture is unavailable or unsuitable" + e.getMessage());
             return false;
         }
-
-
         mMediaRecorder = new MediaRecorder();
 
         // Step 1: Unlock and set camera to MediaRecorder
@@ -239,12 +237,8 @@ public class Camera_new extends AppCompatActivity {
 
 
         //set frame rate
-        int frameRate = convertUnits();
-        double captureRate = frameRate;
-        Log.d(TAG, "frameRate: "+frameRate+"\t captureRate: "+captureRate);
-
-        //mMediaRecorder.setVideoFrameRate(frameRate);
-        //mMediaRecorder.setVideoEncodingBitRate(frameRate);
+        double frameRate = convertUnits();
+        Log.d(TAG, "frameRate: "+frameRate);
         mMediaRecorder.setCaptureRate(frameRate);
 
 
@@ -272,22 +266,6 @@ public class Camera_new extends AppCompatActivity {
         }
         return true;
     }
-
-    //get a Camera object
-    public static Camera getCameraInstance(int cameraID) {
-        int numCameras = Camera.getNumberOfCameras();
-        Camera c = null;
-        if (cameraID < numCameras) {
-            try {
-                c = Camera.open(cameraID); // attempt to get a Camera instance
-            } catch (Exception e) {
-                // Camera is not available (in use or does not exist)
-            }
-
-        }
-        return c; // returns null if camera is unavailable
-    }
-
 
     /**
      * Asynchronous task for preparing the {@link android.media.MediaRecorder} since it's a long blocking
@@ -321,153 +299,29 @@ public class Camera_new extends AppCompatActivity {
         }
     }
 
-    /** A basic Camera preview class */
-    public class CameraPreview extends SurfaceView implements SurfaceHolder.Callback {
-        private SurfaceHolder myHolder;
-        private Camera myCamera;
-
-        public CameraPreview(Context context, Camera camera) {
-            super(context);
-            myCamera = camera;
-
-            // Install a SurfaceHolder.Callback so we get notified when the
-            // underlying surface is created and destroyed.
-            myHolder = getHolder();
-            myHolder.addCallback(this);
-            // deprecated setting, but required on Android versions prior to 3.0
-            myHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
-        }
-
-        /*@Override
-        public void surfaceCreated(SurfaceHolder holder) {
-            // The Surface has been created, now tell the camera where to draw the preview.
-            try {
-                myCamera.setPreviewDisplay(holder);
-                myCamera.startPreview();
-            } catch (IOException e) {
-                Log.d(TAG, "Error setting camera preview: " + e.getMessage());
-            }
-        }*/
-
-        @Override
-        public void surfaceCreated(SurfaceHolder holder) {
-            if (mCamera != null) {
-                Camera.Parameters params = mCamera.getParameters();
-                mCamera.setParameters(params);
-                try {
-                    mCamera.setPreviewDisplay(holder);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                mCamera.startPreview();
-            }
-            prepareVideoRecorder();
-        }
-
-        public void surfaceDestroyed(SurfaceHolder holder) {
-            // empty. Take care of releasing the Camera preview in your activity.
-        }
-
-        public void surfaceChanged(SurfaceHolder holder, int format, int w, int h) {
-            // If your preview can change or rotate, take care of those events here.
-            // Make sure to stop the preview before resizing or reformatting it.
-
-            if (myHolder.getSurface() == null){
-                // preview surface does not exist
-                return;
-            }
-
-            // stop preview before making changes
-            try {
-                myCamera.stopPreview();
-            } catch (Exception e){
-                // ignore: tried to stop a non-existent preview
-            }
-
-            // set preview size and make any resize, rotate or
-            // reformatting changes here
-
-            // start preview with new settings
-            try {
-                mCamera.setPreviewDisplay(myHolder);
-                mCamera.startPreview();
-
-            } catch (Exception e){
-                Log.d(TAG, "Error starting camera preview: " + e.getMessage());
-            }
-        }
-    }
-
-    //Converting from different units to milliseconds for frame interval
-    public int convertUnits() {
-        Log.d(TAG, "prefs: "+sharedPref.getAll().toString());
-
-        int frameInterval = sharedPref.getInt("Frame Interval", 2);
+    //Converting from different units to fps for setCaptureRate
+    public double convertUnits() {
+        double frameInterval = sharedPref.getInt("Frame Interval", 2);
         String unitChoice = sharedPref.getString("Unit", "Milliseconds");
-
-        int convertedUnit = frameInterval;
 
         switch (unitChoice) {
             case "Milliseconds":
-                convertedUnit = 1000/frameInterval;
-                Log.d(TAG, "we got here: " + convertedUnit);
-                break;
+                return 1000/frameInterval;
 
             case "Seconds":
-                convertedUnit = frameInterval;
-                break;
+                return 1/frameInterval;
 
             case "Minutes":
-                convertedUnit = frameInterval/60;
-                break;
+                return 1/(60*frameInterval);
 
             case "Hours":
-                convertedUnit = frameInterval/3600;
-                break;
+                return 1/(3600*frameInterval);
 
             case "Days":
-                convertedUnit = frameInterval/86400;
-                break;
+                return 1/(86400*frameInterval);
+            default:
+                return frameInterval;
         }
-
-        return convertedUnit;
     }
-
-
-    /*public static void setCameraDisplayOrientation(Activity activity, int cameraId, android.hardware.Camera camera) {
-        android.hardware.Camera.CameraInfo info = new android.hardware.Camera.CameraInfo();
-        android.hardware.Camera.getCameraInfo(cameraId, info);
-        int rotation = activity.getWindowManager().getDefaultDisplay().getRotation();
-        Log.d(TAG, "rotation: "+rotation);
-        int degrees = 0;
-        switch (rotation) {
-            case Surface.ROTATION_0:
-                degrees = 0;
-                break;
-            case Surface.ROTATION_90:
-                degrees = 90;
-                break;
-            case Surface.ROTATION_180:
-                degrees = 180;
-                break;
-            case Surface.ROTATION_270:
-                degrees = 270;
-                break;
-        }
-        Log.d(TAG, "degrees: "+degrees);
-        int result;
-        if (info.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
-            Log.d(TAG, info.orientation+"");
-            result = (info.orientation + degrees) % 360;
-            result = (360 - result) % 360;  // compensate the mirror
-        } else {  // back-facing
-            result = (info.orientation - degrees + 360) % 360;
-        }
-        Log.d(TAG, "orientation: "+info.orientation+"");
-        result=result-180;
-        Log.d(TAG, "result of orientation function: "+result);
-        camera.setDisplayOrientation(result);
-    }*/
-
 
 }
