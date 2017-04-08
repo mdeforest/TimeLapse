@@ -39,6 +39,7 @@ package com.example.michaela.timelapse;
         import android.view.View;
         import android.view.WindowManager;
         import android.widget.Button;
+        import android.widget.Toast;
 
         //import com.example.android.common.media.CameraHelper;
 
@@ -74,6 +75,8 @@ public class Camera_new extends AppCompatActivity {
 
         sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
+        Toast.makeText(this, "Press the capture button to begin recording!", Toast.LENGTH_LONG).show();
+
     }
 
     /**
@@ -92,6 +95,9 @@ public class Camera_new extends AppCompatActivity {
                 lp.screenBrightness = 0.9f;
                 getWindow().setAttributes(lp);
                 mMediaRecorder.stop();  // stop the recording
+
+                Toast.makeText(this, "Press the capture button again to record a new time lapse!", Toast.LENGTH_LONG).show();
+
                 try{
                     MediaScannerConnection.scanFile(this, new String[]{this.mOutputFile.getAbsolutePath()}, null, null);}
                 catch (Exception e){Log.d(TAG, "outputfile is null");}
@@ -110,8 +116,6 @@ public class Camera_new extends AppCompatActivity {
             releaseCamera();
 
         } else {
-
-
             new MediaPrepareTask().execute(null, null, null);
             WindowManager.LayoutParams lp = getWindow().getAttributes();
             lp.screenBrightness = 0.005f;
