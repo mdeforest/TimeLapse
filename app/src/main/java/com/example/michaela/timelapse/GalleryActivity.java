@@ -8,17 +8,18 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.Toast;
+
 
 import java.io.File;
 
+
+//Activity to show all recorded timelapse videos in a gallery
 public class GalleryActivity extends AppCompatActivity {
     private String pathName;
     private File mediaStorageDir;
@@ -87,7 +88,6 @@ public class GalleryActivity extends AppCompatActivity {
             imageView.setImageBitmap(mThumb[position]);
             return imageView;
         }
-
         //getImages
         private Bitmap[] mThumb = getThumbnails();
     }
@@ -95,7 +95,6 @@ public class GalleryActivity extends AppCompatActivity {
     //gets Thumbnails for saved Video Files
     public Bitmap[] getThumbnails() {
         //Get thumbnails
-
         Bitmap[] mThumb = new Bitmap[videoFiles.length];
 
         for(int i = 0; i < videoFiles.length; i++) {
@@ -103,9 +102,7 @@ public class GalleryActivity extends AppCompatActivity {
                     MediaStore.Images.Thumbnails.MINI_KIND);
 
             mThumb[i] = thumb;
-
         }
-
         return mThumb;
     }
 }

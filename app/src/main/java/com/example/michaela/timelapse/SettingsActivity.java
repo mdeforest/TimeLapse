@@ -1,6 +1,5 @@
 package com.example.michaela.timelapse;
 
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
@@ -9,15 +8,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 
+//activity for user to select settings for the timelapse camera and save them
 public class SettingsActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getName();
@@ -33,9 +31,6 @@ public class SettingsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_settings);
 
         RadioGroup cameraGroup = (RadioGroup) findViewById(R.id.camera_choice);
-
-        //Gather shared Preferences and prepopulate choices
-        //SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
 
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
@@ -102,7 +97,6 @@ public class SettingsActivity extends AppCompatActivity {
                     saveSettings(settingsButton);
 
                     SettingsActivity.super.onBackPressed();
-
                 }
             });
             builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
@@ -110,7 +104,6 @@ public class SettingsActivity extends AppCompatActivity {
                     // User clicked No button
 
                     SettingsActivity.super.onBackPressed();
-
                 }
             });
 

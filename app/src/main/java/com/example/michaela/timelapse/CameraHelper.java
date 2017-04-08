@@ -15,8 +15,6 @@ package com.example.michaela.timelapse;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
         import android.annotation.TargetApi;
         import android.hardware.Camera;
         import android.os.Build;

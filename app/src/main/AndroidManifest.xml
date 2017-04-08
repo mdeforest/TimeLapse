@@ -26,13 +26,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".SettingsActivity" />
-        <activity android:name=".CameraActivity">
-
-            <!-- configure this activity to use landscape orientation -->
-        </activity>
         <activity android:name=".GalleryActivity" />
-        <activity android:name=".WaitingActivity" />
-        <activity android:name=".Camera_new" />
+        <activity android:name=".CameraActivity" />
         <activity android:name=".PlaybackActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar" >
         </activity>
