@@ -1,5 +1,9 @@
 package com.example.michaela.timelapse;
 /*
+ * Edited for timelapse by Michaela DeForest and Julia Ramsey
+ *
+ *
+ * Original Code from:
  * Copyright (C) 2013 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,10 +19,7 @@ package com.example.michaela.timelapse;
  * limitations under the License.
  */
 
-
         import android.annotation.TargetApi;
-        import android.app.Activity;
-        import android.content.Context;
         import android.content.SharedPreferences;
         import android.hardware.Camera;
         import android.media.CamcorderProfile;
@@ -30,19 +31,11 @@ package com.example.michaela.timelapse;
         import android.preference.PreferenceManager;
         import android.support.v7.app.AppCompatActivity;
         import android.util.Log;
-        import android.view.Display;
-        import android.view.Menu;
-        import android.view.Surface;
-        import android.view.SurfaceHolder;
-        import android.view.SurfaceView;
         import android.view.TextureView;
         import android.view.View;
         import android.view.WindowManager;
         import android.widget.Button;
         import android.widget.Toast;
-
-        //import com.example.android.common.media.CameraHelper;
-
         import java.io.File;
         import java.io.IOException;
         import java.util.List;
@@ -73,10 +66,10 @@ public class Camera_new extends AppCompatActivity {
         mPreview = (TextureView) findViewById(R.id.texture);
         captureButton = (Button) findViewById(R.id.button_capture);
 
+        //holds user settings
         sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
-        Toast.makeText(this, "Press the capture button to begin recording!", Toast.LENGTH_LONG).show();
-
+        Toast.makeText(this, "Press the capture button to begin recording!", Toast.LENGTH_SHORT).show();
     }
 
     /**
@@ -88,40 +81,35 @@ public class Camera_new extends AppCompatActivity {
      */
     public void onCaptureClick(View view) {
         if (isRecording) {
-
             // stop recording and release camera
             try {
+                //light up screen when done recording
                 WindowManager.LayoutParams lp = getWindow().getAttributes();
                 lp.screenBrightness = 0.9f;
                 getWindow().setAttributes(lp);
-                mMediaRecorder.stop();  // stop the recording
-
-                Toast.makeText(this, "Press the capture button again to record a new time lapse!", Toast.LENGTH_LONG).show();
-
-                try{
-                    MediaScannerConnection.scanFile(this, new String[]{this.mOutputFile.getAbsolutePath()}, null, null);}
-                catch (Exception e){Log.d(TAG, "outputfile is null");}
+                mMediaRecorder.stop();
+                Toast.makeText(this, "Press the capture button again to record a new time lapse!", Toast.LENGTH_SHORT).show();
+                //fix bug about files not showing up in gallery after being recorded (only show up when usb is unplugged and replugged sometimes)
+                MediaScannerConnection.scanFile(this, new String[]{this.mOutputFile.getAbsolutePath()}, null, null);
             } catch (RuntimeException e) {
                 // RuntimeException is thrown when stop() is called immediately after start().
                 // In this case the output file is not properly constructed ans should be deleted.
                 Log.d(TAG, "RuntimeException: stop() is called immediately after start()");
-                //noinspection ResultOfMethodCallIgnored
                 mOutputFile.delete();
+            } catch (Exception e1) {
+                Log.d(TAG, "outputfile is null");
             }
             releaseMediaRecorder(); // release the MediaRecorder object
             mCamera.lock();         // take camera access back from MediaRecorder
-
-
             isRecording = false;
             releaseCamera();
 
         } else {
             new MediaPrepareTask().execute(null, null, null);
+            //dim screen while recording to conserve battery
             WindowManager.LayoutParams lp = getWindow().getAttributes();
             lp.screenBrightness = 0.005f;
             getWindow().setAttributes(lp);
-
-
         }
     }
 
@@ -132,8 +120,6 @@ public class Camera_new extends AppCompatActivity {
         releaseMediaRecorder();
         // release the camera immediately on pause event
         releaseCamera();
-
-
     }
 
     private void releaseMediaRecorder(){
@@ -151,7 +137,6 @@ public class Camera_new extends AppCompatActivity {
 
     private void releaseCamera(){
         if (mCamera != null){
-            // release the camera for other applications
             mCamera.release();
             mCamera = null;
         }
@@ -159,13 +144,13 @@ public class Camera_new extends AppCompatActivity {
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     private boolean prepareVideoRecorder(){
-        String cameraChoice = sharedPref.getString("Camera", "rear");
 
+        //Open rear or front camera based on user settings
+        String cameraChoice = sharedPref.getString("Camera", "rear");
         if (cameraChoice.equals("front")) {
             mCamera = CameraHelper.getDefaultFrontFacingCameraInstance();
             mCamera.setDisplayOrientation(90);
-        }
-        else {
+        } else {
             mCamera = CameraHelper.getDefaultBackFacingCameraInstance();
             mCamera.setDisplayOrientation(270);
         }
@@ -179,15 +164,13 @@ public class Camera_new extends AppCompatActivity {
         Camera.Size optimalSize = CameraHelper.getOptimalVideoSize(mSupportedVideoSizes,
                 mSupportedPreviewSizes, mPreview.getWidth(), mPreview.getHeight());
 
-        // Use the same size for recording profile.
+        //change the quality of video depending on user settings
         String qualityChoice = sharedPref.getString("Quality", "high");
-
         CamcorderProfile profile;
 
         if (qualityChoice.equals("low")) {
             profile = CamcorderProfile.get(CamcorderProfile.QUALITY_TIME_LAPSE_LOW);
-        }
-        else {
+        } else {
             profile = CamcorderProfile.get(CamcorderProfile.QUALITY_TIME_LAPSE_HIGH);
         }
 
@@ -196,28 +179,6 @@ public class Camera_new extends AppCompatActivity {
 
         // likewise for the camera object itself.
         parameters.setPreviewSize(profile.videoFrameWidth, profile.videoFrameHeight);
-
-        /*if (cameraChoice.equals("rear")) {
-            Display display = ((WindowManager) getSystemService(WINDOW_SERVICE)).getDefaultDisplay();
-
-            if (display.getRotation() == Surface.ROTATION_0) {
-                parameters.setPreviewSize(profile.videoFrameWidth, profile.videoFrameHeight);
-                 //For Michaela's phone, this should be 90
-            }
-
-            if (display.getRotation() == Surface.ROTATION_90) {
-                parameters.setPreviewSize(profile.videoFrameWidth, profile.videoFrameHeight);
-            }
-
-            if (display.getRotation() == Surface.ROTATION_180) {
-                parameters.setPreviewSize(profile.videoFrameWidth, profile.videoFrameHeight);
-            }
-
-            if (display.getRotation() == Surface.ROTATION_270) {
-                parameters.setPreviewSize(profile.videoFrameWidth, profile.videoFrameHeight);
-                mCamera.setDisplayOrientation(0); //For Michaela's phone, this should be 180
-            }
-        }*/
 
         mCamera.setParameters(parameters);
         try {
@@ -299,7 +260,7 @@ public class Camera_new extends AppCompatActivity {
         }
     }
 
-    //Converting from different units to fps for setCaptureRate
+    //Function for onverting from different units to fps for setCaptureRate
     public double convertUnits() {
         double frameInterval = sharedPref.getInt("Frame Interval", 2);
         String unitChoice = sharedPref.getString("Unit", "Milliseconds");
@@ -323,5 +284,4 @@ public class Camera_new extends AppCompatActivity {
                 return frameInterval;
         }
     }
-
 }
